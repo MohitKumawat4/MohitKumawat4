@@ -45,7 +45,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/commits_3d_dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="./assets/commits_3d_light.svg" />
-  <img src="./assets/commits_3d_dark.svg" width="100%" alt="52-week isometric 3D contribution skyline and live Git HEAD commit stream." />
+  <img src="./assets/commits_3d_dark.svg" width="100%" alt="3D Code Activity and Language Intelligence Dashboard: shipped source volume, language distribution, 3D codebase scale by project, and recent git diff stream." />
 </picture>
 
 ---

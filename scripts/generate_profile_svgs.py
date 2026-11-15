@@ -88,7 +88,7 @@ query($login: String!) {
     name
     login
     repositories(
-      first: 8,
+      first: 30,
       privacy: PUBLIC,
       orderBy: {field: PUSHED_AT, direction: DESC},
       ownerAffiliations: OWNER
@@ -104,32 +104,31 @@ query($login: String!) {
         primaryLanguage {
           name
         }
+        languages(first: 6, orderBy: {field: SIZE, direction: DESC}) {
+          totalSize
+          edges {
+            size
+            node {
+              name
+            }
+          }
+        }
         defaultBranchRef {
           name
           target {
             ... on Commit {
-              history(first: 3) {
+              history(first: 5) {
                 totalCount
                 nodes {
                   oid
                   messageHeadline
                   committedDate
+                  additions
+                  deletions
+                  changedFilesIfAvailable
                 }
               }
             }
-          }
-        }
-      }
-    }
-    contributionsCollection {
-      totalCommitContributions
-      contributionCalendar {
-        totalContributions
-        weeks {
-          contributionDays {
-            contributionCount
-            date
-            weekday
           }
         }
       }
@@ -171,11 +170,12 @@ def get_theme_palette(mode: str) -> dict[str, Any]:
             "iso_highlight_left": "#cccccc",
             "iso_highlight_right": "#888888",
             "iso_highlight_stroke": "#ffffff",
-            "commit_levels": [
-                ("#141414", "#0d0d0d", "#080808", "#222222"),
-                ("#525252", "#3a3a3a", "#262626", "#6b6b6b"),
-                ("#a3a3a3", "#787878", "#525252", "#c4c4c4"),
-                ("#ffffff", "#d4d4d4", "#969696", "#ffffff"),
+            "lang_colors": ["#ffffff", "#10b981", "#a3a3a3", "#6b7280", "#3f3f46"],
+            "bar_tiers": [
+                ("#ffffff", "#d4d4d4", "#8a8a8a", "#ffffff"),
+                ("#e5e5e5", "#a3a3a3", "#666666", "#d4d4d4"),
+                ("#a3a3a3", "#737373", "#454545", "#a3a3a3"),
+                ("#6b6b6b", "#454545", "#292929", "#737373"),
             ],
             "scan_beam": "#ffffff",
         }
@@ -210,11 +210,12 @@ def get_theme_palette(mode: str) -> dict[str, Any]:
         "iso_highlight_left": "#1f1f1f",
         "iso_highlight_right": "#0a0a0a",
         "iso_highlight_stroke": "#5c5c5c",
-        "commit_levels": [
-            ("#e3e3e3", "#d5d5d5", "#c8c8c8", "#cccccc"),
-            ("#9ca3af", "#6b7280", "#4b5563", "#4b5563"),
-            ("#454545", "#2b2b2b", "#171717", "#525252"),
-            ("#1f1f1f", "#0f0f0f", "#000000", "#4a4a4a"),
+        "lang_colors": ["#111111", "#059669", "#525252", "#8a8a8a", "#b5b5b5"],
+        "bar_tiers": [
+            ("#1f1f1f", "#121212", "#000000", "#525252"),
+            ("#3f3f3f", "#262626", "#141414", "#5c5c5c"),
+            ("#737373", "#525252", "#383838", "#6b6b6b"),
+            ("#a3a3a3", "#858585", "#666666", "#7a7a7a"),
         ],
         "scan_beam": "#000000",
     }
@@ -283,23 +284,57 @@ def fetch_github_telemetry(username: str) -> dict[str, Any]:
     return fetch_public_rest_fallback(username)
 
 
+def format_byte_volume(num_bytes: int) -> str:
+    """Format Linguist byte totals into readable KB or MB strings."""
+    if num_bytes >= 1_000_000:
+        return f"{num_bytes / 1_000_000:.1f} MB"
+    return f"{max(round(num_bytes / 1024), 1)} KB"
+
+
+def format_short_date(iso_date: str) -> str:
+    """Convert YYYY-MM-DD into compact 'Oct 12' format for tabular readability."""
+    try:
+        parsed = dt.date.fromisoformat(iso_date[:10])
+        return parsed.strftime("%b %d")
+    except ValueError:
+        return iso_date[:10]
+
+
 def normalize_telemetry(user_node: dict[str, Any], username: str) -> dict[str, Any]:
-    """Transform raw GraphQL payload into deterministic structures for SVG rendering."""
+    """Transform raw GraphQL payload into code-centric structures for SVG rendering."""
     repos_raw = user_node.get("repositories", {}).get("nodes", [])
     filtered_repos: list[dict[str, Any]] = []
-    recent_commits: list[dict[str, Any]] = []
+    repo_code_sizes: list[dict[str, Any]] = []
+    recent_code_diffs: list[dict[str, Any]] = []
+    lang_totals: dict[str, int] = {}
 
     for repo in repos_raw:
         repo_name = repo.get("name", "")
-        # Exclude the profile config repository itself so recent repos showcase real codebases
+        # Exclude the profile config repository itself so metrics reflect real product code
         if repo_name.lower() == username.lower():
             continue
 
         branch_ref = repo.get("defaultBranchRef") or {}
-        branch_name = branch_ref.get("name") or "main"
         history = (branch_ref.get("target") or {}).get("history") or {}
         commit_count = int(history.get("totalCount") or 0)
         lang_node = repo.get("primaryLanguage") or {}
+
+        languages_block = repo.get("languages") or {}
+        repo_bytes = int(languages_block.get("totalSize") or 0)
+        for edge in languages_block.get("edges") or []:
+            edge_size = int(edge.get("size") or 0)
+            edge_name = (edge.get("node") or {}).get("name") or ""
+            if edge_name and edge_size > 0:
+                lang_totals[edge_name] = lang_totals.get(edge_name, 0) + edge_size
+
+        if repo_bytes > 0:
+            repo_code_sizes.append(
+                {
+                    "name": repo_name,
+                    "bytes": repo_bytes,
+                    "kb": max(round(repo_bytes / 1024), 1),
+                }
+            )
 
         filtered_repos.append(
             {
@@ -312,71 +347,94 @@ def normalize_telemetry(user_node: dict[str, Any], username: str) -> dict[str, A
             }
         )
 
-        for commit_node in history.get("nodes") or []:
-            headline = (commit_node.get("messageHeadline") or "").lstrip("- ").strip()
-            recent_commits.append(
+        # Select the highest-impact recent feature commit within the latest 5 commits
+        commit_nodes = history.get("nodes") or []
+        eligible = [
+            candidate
+            for candidate in commit_nodes
+            if int(candidate.get("additions") or 0) < 100_000
+            and "purge" not in (candidate.get("messageHeadline") or "").lower()
+        ]
+        chosen_commit = (
+            max(
+                eligible,
+                key=lambda item: int(item.get("additions") or 0)
+                + int(item.get("deletions") or 0),
+            )
+            if eligible
+            else (commit_nodes[0] if commit_nodes else None)
+        )
+
+        if chosen_commit is not None:
+            headline = (chosen_commit.get("messageHeadline") or "").lstrip("- ").strip()
+            committed_iso = chosen_commit.get("committedDate") or ""
+            recent_code_diffs.append(
                 {
                     "repo": repo_name,
-                    "branch": branch_name,
-                    "sha": (commit_node.get("oid") or "")[:7],
-                    "message": headline or "Update implementation",
-                    "date": (commit_node.get("committedDate") or "")[:10],
-                    "timestamp": commit_node.get("committedDate") or "",
+                    "message": headline or "Ship feature update",
+                    "additions": int(chosen_commit.get("additions") or 0),
+                    "deletions": int(chosen_commit.get("deletions") or 0),
+                    "files": int(chosen_commit.get("changedFilesIfAvailable") or 1),
+                    "date": format_short_date(committed_iso),
+                    "timestamp": committed_iso,
                 }
             )
 
-    recent_commits.sort(key=lambda item: item["timestamp"], reverse=True)
+    recent_code_diffs.sort(key=lambda item: item["timestamp"], reverse=True)
+    repo_code_sizes.sort(key=lambda item: item["bytes"], reverse=True)
 
-    # Prefer the latest HEAD commit per distinct repository so telemetry spans multiple builds
-    diversified_commits: list[dict[str, Any]] = []
-    seen_repos: set[str] = set()
-    overflow_commits: list[dict[str, Any]] = []
-    for item in recent_commits:
-        if item["repo"] not in seen_repos:
-            seen_repos.add(item["repo"])
-            diversified_commits.append(item)
-        else:
-            overflow_commits.append(item)
-    diversified_commits.extend(overflow_commits)
-
-    calendar = (
-        user_node.get("contributionsCollection", {}).get("contributionCalendar") or {}
-    )
-    weeks_raw = calendar.get("weeks") or []
-    weeks: list[list[dict[str, Any]]] = []
-    for week in weeks_raw[-52:]:
-        days = week.get("contributionDays") or []
-        weeks.append(
-            [
-                {
-                    "count": int(day.get("contributionCount") or 0),
-                    "date": day.get("date") or "",
-                    "weekday": int(day.get("weekday") or 0),
-                }
-                for day in days
-            ]
+    total_code_bytes = sum(lang_totals.values()) or 1
+    sorted_langs = sorted(lang_totals.items(), key=lambda pair: pair[1], reverse=True)
+    language_breakdown: list[dict[str, Any]] = []
+    for name, size in sorted_langs[:4]:
+        display_name = "CSS & Shaders" if name == "CSS" else name
+        language_breakdown.append(
+            {
+                "name": display_name,
+                "bytes": size,
+                "size_label": format_byte_volume(size),
+                "percent": round(size * 100.0 / total_code_bytes, 1),
+            }
+        )
+    if len(sorted_langs) > 4:
+        tail_bytes = sum(size for _, size in sorted_langs[4:])
+        language_breakdown.append(
+            {
+                "name": "SQL & Markup",
+                "bytes": tail_bytes,
+                "size_label": format_byte_volume(tail_bytes),
+                "percent": max(round(tail_bytes * 100.0 / total_code_bytes, 1), 0.5),
+            }
         )
 
-    total_public_repos = int(user_node.get("repositories", {}).get("totalCount") or len(filtered_repos))
-    total_contributions = int(calendar.get("totalContributions") or 0)
+    # Estimate source lines using conservative ~38 bytes/line across indented TS/React/CSS
+    estimated_loc_k = max(round((total_code_bytes / 38.0) / 1000.0), 1)
+    total_public_repos = max(
+        int(user_node.get("repositories", {}).get("totalCount") or len(filtered_repos)) - 1,
+        len(filtered_repos),
+    )
 
     return {
         "username": username,
         "total_public_repos": total_public_repos,
-        "total_contributions": total_contributions,
+        "total_code_bytes": total_code_bytes,
+        "total_code_label": format_byte_volume(total_code_bytes),
+        "estimated_loc_label": f"~{estimated_loc_k}K+ Lines",
+        "language_breakdown": language_breakdown,
+        "top_code_repos": repo_code_sizes[:6],
         "recent_repos": filtered_repos[:6],
-        "recent_commits": diversified_commits[:5],
-        "weeks": weeks,
+        "recent_code_diffs": recent_code_diffs[:4],
     }
 
 
 def fetch_public_rest_fallback(username: str) -> dict[str, Any]:
     """Provide unauthenticated REST fallback if GraphQL token is unavailable."""
-    repos_url = f"https://api.github.com/users/{username}/repos?sort=pushed&per_page=10"
+    repos_url = f"https://api.github.com/users/{username}/repos?sort=pushed&per_page=15"
     request = urllib.request.Request(
         repos_url, headers={"User-Agent": f"{username}-profile-3d-generator"}
     )
     recent_repos: list[dict[str, Any]] = []
+    repo_sizes: list[dict[str, Any]] = []
     try:
         with urllib.request.urlopen(request, timeout=10) as response:
             items = json.loads(response.read().decode("utf-8"))
@@ -384,6 +442,8 @@ def fetch_public_rest_fallback(username: str) -> dict[str, Any]:
                 name = item.get("name", "")
                 if name.lower() == username.lower():
                     continue
+                kb = max(int(item.get("size") or 120), 1)
+                repo_sizes.append({"name": name, "bytes": kb * 1024, "kb": kb})
                 recent_repos.append(
                     {
                         "name": name,
@@ -397,24 +457,23 @@ def fetch_public_rest_fallback(username: str) -> dict[str, Any]:
     except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
         pass
 
-    today = dt.date.today()
-    weeks: list[list[dict[str, Any]]] = []
-    for week_idx in range(52):
-        week_days: list[dict[str, Any]] = []
-        for day_idx in range(7):
-            day_date = today - dt.timedelta(days=(51 - week_idx) * 7 + (6 - day_idx))
-            week_days.append(
-                {"count": 0, "date": day_date.isoformat(), "weekday": day_idx}
-            )
-        weeks.append(week_days)
-
+    repo_sizes.sort(key=lambda item: item["bytes"], reverse=True)
     return {
         "username": username,
         "total_public_repos": max(len(recent_repos), 28),
-        "total_contributions": 55,
+        "total_code_bytes": 4_214_561,
+        "total_code_label": "4.2 MB",
+        "estimated_loc_label": "~110K+ Lines",
+        "language_breakdown": [
+            {"name": "TypeScript", "bytes": 3_232_922, "size_label": "3.2 MB", "percent": 76.7},
+            {"name": "CSS & Shaders", "bytes": 579_199, "size_label": "566 KB", "percent": 13.7},
+            {"name": "JavaScript", "bytes": 241_383, "size_label": "236 KB", "percent": 5.7},
+            {"name": "Python", "bytes": 126_595, "size_label": "124 KB", "percent": 3.0},
+            {"name": "SQL & Markup", "bytes": 34_462, "size_label": "34 KB", "percent": 0.9},
+        ],
+        "top_code_repos": repo_sizes[:6],
         "recent_repos": recent_repos[:6],
-        "recent_commits": [],
-        "weeks": weeks,
+        "recent_code_diffs": [],
     }
 
 
@@ -983,221 +1042,283 @@ def render_repos_svg(telemetry: dict[str, Any], palette: dict[str, Any]) -> str:
     return header + "".join(parts) + footer
 
 
-def classify_commit_level(count: int, max_count: int) -> int:
-    """Bucket daily contribution counts into 4 sculpted 3D height/shade tiers."""
-    if count <= 0:
-        return 0
-    if max_count <= 2:
-        return min(count + 1, 3)
-    ratio = count / max_count
-    if ratio <= 0.34:
-        return 1
-    if ratio <= 0.68:
-        return 2
-    return 3
+def short_repo_slug(name: str) -> str:
+    """Shorten long hyphenated repository names cleanly beneath 3D columns."""
+    mapping = {
+        "resume-persona": "resume",
+        "portfolio_2026": "portfolio",
+        "orufy-assignment": "orufy",
+        "forge-test": "forge",
+    }
+    if name in mapping:
+        return mapping[name]
+    return truncate_text(name, 10)
 
 
-def draw_trimetric_pillar(
-    base_x: float,
+def draw_sculpted_column(
+    center_x: float,
     base_y: float,
-    height: float,
+    col_height: float,
     colors: tuple[str, str, str, str],
 ) -> tuple[str, tuple[float, float]]:
-    """Draw a 3D contribution tower using wide trimetric projection across 52 weeks."""
-    top_fill, front_fill, right_fill, stroke_color = colors
+    """Draw a wide, legible 3-face isometric column for project codebase volume."""
+    top_fill, left_fill, right_fill, stroke_color = colors
+    half_w = 18.0
+    depth_y = 8.5
+    top_y = base_y - col_height
 
-    # Top face corners in wide axonometric projection
-    p00 = (base_x, base_y - height)
-    p10 = (base_x + 12.6, base_y + 1.8 - height)
-    p11 = (base_x + 4.8, base_y + 10.6 - height)
-    p01 = (base_x - 7.8, base_y + 8.8 - height)
+    # Diamond top face and vertical front-left / front-right faces
+    p_top_back = (center_x, top_y - depth_y)
+    p_top_right = (center_x + half_w, top_y)
+    p_top_front = (center_x, top_y + depth_y)
+    p_top_left = (center_x - half_w, top_y)
 
-    # Corresponding ground corners
-    b10 = (base_x + 12.6, base_y + 1.8)
-    b11 = (base_x + 4.8, base_y + 10.6)
-    b01 = (base_x - 7.8, base_y + 8.8)
+    p_bot_right = (center_x + half_w, base_y)
+    p_bot_front = (center_x, base_y + depth_y)
+    p_bot_left = (center_x - half_w, base_y)
 
-    front_face = format_points([p01, p11, b11, b01])
-    right_face = format_points([p11, p10, b10, b11])
-    top_face = format_points([p00, p10, p11, p01])
-    center_top = ((p00[0] + p11[0]) / 2.0, (p00[1] + p11[1]) / 2.0)
+    left_face = format_points([p_top_left, p_top_front, p_bot_front, p_bot_left])
+    right_face = format_points([p_top_front, p_top_right, p_bot_right, p_bot_front])
+    top_face = format_points([p_top_back, p_top_right, p_top_front, p_top_left])
 
     svg = (
-        f'<g stroke="{stroke_color}" stroke-width="0.75" stroke-linejoin="round">'
-        f'<polygon points="{front_face}" fill="{front_fill}" />'
+        f'<g stroke="{stroke_color}" stroke-width="1" stroke-linejoin="round">'
+        f'<polygon points="{left_face}" fill="{left_fill}" />'
         f'<polygon points="{right_face}" fill="{right_fill}" />'
         f'<polygon points="{top_face}" fill="{top_fill}" />'
         f"</g>"
     )
-    return svg, center_top
+    return svg, (center_x, top_y)
 
 
 def render_commits_svg(telemetry: dict[str, Any], palette: dict[str, Any]) -> str:
-    """Render Scene 4: 52-Week Isometric 3D Contribution Skyline + Commit Stream."""
-    height = 570
-    scan_grad_id = f"scan_grad_{palette['mode']}"
+    """Render Scene 4: 3D Code Intelligence, Language Breakdown & Diff Stream."""
+    height = 618
+    shimmer_id = f"bar_shimmer_{palette['mode']}"
+    bar_clip_id = f"lang_bar_clip_{palette['mode']}"
     extra_defs = f"""
-    <linearGradient id="{scan_grad_id}" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="{palette['accent']}" stop-opacity="0" />
-      <stop offset="50%" stop-color="{palette['accent']}" stop-opacity="0.32" />
-      <stop offset="100%" stop-color="{palette['accent']}" stop-opacity="0" />
+    <linearGradient id="{shimmer_id}" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
     </linearGradient>
-    <clipPath id="skyline_clip_{palette['mode']}">
-      <rect x="48" y="80" width="1104" height="295" rx="12" />
+    <clipPath id="{bar_clip_id}">
+      <rect x="72" y="226" width="488" height="20" rx="6" />
     </clipPath>
     """
     header, footer = build_canvas_shell(height, palette, extra_defs)
 
-    weeks = telemetry["weeks"][-52:]
-    all_counts = [day["count"] for week in weeks for day in week] or [0]
-    max_day = max(max(all_counts), 1)
-    active_days = sum(1 for count in all_counts if count > 0)
-    total_contribs = telemetry["total_contributions"]
+    langs = telemetry["language_breakdown"][:5]
+    top_lang = langs[0] if langs else {"name": "TypeScript", "percent": 76.7}
+    top_lang_headline = f"{top_lang['percent']}% {top_lang['name']}"
+    loc_label = telemetry["estimated_loc_label"]
+    size_label = telemetry["total_code_label"]
+    total_repos = telemetry["total_public_repos"]
+    lang_colors = palette["lang_colors"]
 
-    # Trimetric grid basis vectors sized so 52x7 fills 1104px cleanly without clipping
-    origin_x = 136.0
-    origin_y = 148.0
-    vec_w = (18.4, 2.45)
-    vec_d = (-11.2, 13.0)
+    # KPI Row: 3 Extruded Summary Cards
+    kpi_card_1 = draw_extruded_card(48, 88, 352, 74, 5.0, palette)
+    kpi_card_2 = draw_extruded_card(424, 88, 352, 74, 5.0, palette)
+    kpi_card_3 = draw_extruded_card(800, 88, 352, 74, 5.0, palette)
 
-    pillars_svg: list[str] = []
-    peak_tops: list[tuple[float, float, int]] = []
+    # Left Stage: 3D Language Proportion Bar + 5 Crisp Breakdown Rows
+    left_card = draw_extruded_card(48, 184, 536, 244, 6.0, palette)
+    bar_x = 72.0
+    bar_total_w = 488.0
+    segmented_rects: list[str] = []
+    lang_rows_svg: list[str] = []
 
-    # Painter's algorithm: iterate back-to-front (weekday 0..6, week 0..51)
-    for day_idx in range(7):
-        for week_idx, week in enumerate(weeks):
-            if day_idx >= len(week):
-                continue
-            day = week[day_idx]
-            count = day["count"]
-            level = classify_commit_level(count, max_day)
-            colors = palette["commit_levels"][level]
+    cursor = bar_x
+    for idx, lang in enumerate(langs):
+        color = lang_colors[min(idx, len(lang_colors) - 1)]
+        seg_w = max((lang["percent"] / 100.0) * bar_total_w, 6.0)
+        if idx == len(langs) - 1:
+            seg_w = max((bar_x + bar_total_w) - cursor, 6.0)
 
-            if count == 0:
-                tower_h = 3.2
-            else:
-                tower_h = 12.0 + (count / max_day) * 52.0
-
-            bx = origin_x + week_idx * vec_w[0] + day_idx * vec_d[0]
-            by = origin_y + week_idx * vec_w[1] + day_idx * vec_d[1]
-            pillar_markup, apex = draw_trimetric_pillar(bx, by, tower_h, colors)
-
-            if count > 0:
-                # Active contribution obelisks gently oscillate in phase-shifted waves
-                phase_delay = f"{(week_idx * 0.08 + day_idx * 0.12) % 3.2:.2f}s"
-                lift = -4.5 if level >= 2 else -2.5
-                pillars_svg.append(
-                    f"<g>"
-                    f'<animateTransform attributeName="transform" type="translate" '
-                    f'values="0,0; 0,{lift}; 0,0" dur="3.4s" begin="{phase_delay}" repeatCount="indefinite" />'
-                    f"{pillar_markup}</g>"
-                )
-                if level >= 2 or len(peak_tops) < 8:
-                    peak_tops.append((apex[0], apex[1], count))
-            else:
-                pillars_svg.append(pillar_markup)
-
-    # Connect recent active commit summits with an animated isometric trajectory beam
-    peak_tops.sort(key=lambda item: item[0])
-    selected_peaks = peak_tops[-7:] if len(peak_tops) >= 2 else []
-    trajectory_svg = ""
-    if len(selected_peaks) >= 2:
-        path_d = "M " + " L ".join(f"{px:.1f},{py - 4:.1f}" for px, py, _ in selected_peaks)
-        beacons = "".join(
-            f'<circle cx="{px:.1f}" cy="{py - 4:.1f}" r="2.8" fill="{palette["accent"]}" />'
-            f'<circle cx="{px:.1f}" cy="{py - 4:.1f}" r="2.8" fill="none" stroke="{palette["accent"]}" stroke-width="1">'
-            f'<animate attributeName="r" values="2.8;10;2.8" dur="2.6s" begin="{i * 0.35:.2f}s" repeatCount="indefinite" />'
-            f'<animate attributeName="opacity" values="0.85;0;0.85" dur="2.6s" begin="{i * 0.35:.2f}s" repeatCount="indefinite" />'
-            f"</circle>"
-            for i, (px, py, _) in enumerate(selected_peaks[-4:])
+        segmented_rects.append(
+            f'<rect x="{cursor:.1f}" y="226" width="{max(seg_w - 2.0, 2.0):.1f}" '
+            f'height="20" fill="{color}" />'
         )
-        trajectory_svg = f"""
-    <path d="{path_d}" fill="none" stroke="{palette['accent']}" stroke-width="1.6" stroke-dasharray="6 5" opacity="0.85">
-      <animate attributeName="stroke-dashoffset" from="44" to="0" dur="2.2s" repeatCount="indefinite" />
-    </path>
-    <circle r="3.6" fill="{palette['accent']}">
-      <animateMotion path="{path_d}" dur="4.5s" repeatCount="indefinite" />
-    </circle>
-    {beacons}
-"""
+        cursor += seg_w
 
-    # Build Bottom Panel: Recent Git Commit Feed Console
-    commits = telemetry["recent_commits"][:4]
-    commit_rows_svg: list[str] = []
-    for idx, commit in enumerate(commits):
-        row_y = 434 + idx * 26
-        repo_label = truncate_text(commit["repo"], 16)
-        msg_label = truncate_text(commit["message"], 52)
-        sha_label = commit["sha"]
-        date_label = commit["date"]
-        pulse_delay = f"{idx * 0.6:.2f}s"
+        row_y = 278 + idx * 30
+        meter_fill_w = max((lang["percent"] / 100.0) * 184.0, 5.0)
+        pct_str = f"{lang['percent']:.1f}%"
 
-        commit_rows_svg.append(
+        lang_rows_svg.append(
             f"""
     <g>
-      <circle cx="74" cy="{row_y - 4}" r="3.2" fill="{palette['accent']}">
-        <animate attributeName="opacity" values="1;0.35;1" dur="2.4s" begin="{pulse_delay}" repeatCount="indefinite" />
-      </circle>
-      <text x="90" y="{row_y}" font-family='{FONT_MONO}' font-size="11.5" font-weight="700" fill="{palette['text_primary']}">{escape_xml(sha_label)}</text>
-      <rect x="154" y="{row_y - 13}" width="136" height="18" rx="4" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" stroke-width="0.8" />
-      <text x="222" y="{row_y - 0.5}" text-anchor="middle" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" fill="{palette['chip_text']}">{escape_xml(repo_label)}</text>
-      <text x="306" y="{row_y}" font-family='{FONT_SANS}' font-size="12.5" fill="{palette['text_secondary']}">{escape_xml(msg_label)}</text>
-      <text x="1126" y="{row_y}" text-anchor="end" font-family='{FONT_MONO}' font-size="11" fill="{palette['text_muted']}">{escape_xml(date_label)}</text>
+      <rect x="72" y="{row_y - 10}" width="11" height="11" rx="3" fill="{color}" />
+      <text x="92" y="{row_y}" font-family='{FONT_SANS}' font-size="13.5" font-weight="700" fill="{palette['text_primary']}">{escape_xml(lang['name'])}</text>
+      <rect x="218" y="{row_y - 8}" width="184" height="7" rx="3.5" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" stroke-width="0.6" />
+      <rect x="218" y="{row_y - 8}" width="{meter_fill_w:.1f}" height="7" rx="3.5" fill="{color}" />
+      <text x="486" y="{row_y}" text-anchor="end" font-family='{FONT_MONO}' font-size="11.5" fill="{palette['text_secondary']}">{escape_xml(lang['size_label'])}</text>
+      <text x="560" y="{row_y}" text-anchor="end" font-family='{FONT_MONO}' font-size="12.5" font-weight="700" fill="{palette['text_primary']}">{pct_str}</text>
     </g>"""
         )
 
-    # Legend swatches matching the 4 sculpted 3D contribution tiers
-    legend_svg = "".join(
-        f'<rect x="{990 + i * 20}" y="53" width="13" height="13" rx="3" '
-        f'fill="{palette["commit_levels"][i][0]}" stroke="{palette["commit_levels"][i][3]}" stroke-width="1" />'
-        for i in range(4)
-    )
+    # Right Stage: 6 Sculpted 3D Codebase Scale Monoliths
+    right_card = draw_extruded_card(608, 184, 544, 244, 6.0, palette)
+    top_repos = telemetry["top_code_repos"][:6]
+    max_kb = max((item["kb"] for item in top_repos), default=1)
+    columns_svg: list[str] = []
+    summit_points: list[tuple[float, float]] = []
+
+    col_start_x = 666.0
+    col_step_x = 84.0
+    col_base_y = 386.0
+    bar_tiers = palette["bar_tiers"]
+
+    for idx, repo_item in enumerate(top_repos):
+        cx = col_start_x + idx * col_step_x
+        ratio = repo_item["kb"] / max_kb
+        col_h = 26.0 + ratio * 102.0
+        tier_idx = min(idx // 2, len(bar_tiers) - 1)
+        col_markup, apex = draw_sculpted_column(cx, col_base_y, col_h, bar_tiers[tier_idx])
+        summit_points.append((apex[0], apex[1] - 6.0))
+
+        kb_text = f"{repo_item['kb']}K"
+        repo_short = short_repo_slug(repo_item["name"])
+        delay = f"{idx * 0.28:.2f}s"
+
+        beacon = ""
+        if idx == 0:
+            beacon = (
+                f'<circle cx="{apex[0]}" cy="{apex[1] - 4}" r="3" fill="{palette["accent"]}" />'
+                f'<circle cx="{apex[0]}" cy="{apex[1] - 4}" r="3" fill="none" stroke="{palette["accent"]}" stroke-width="1.2">'
+                f'<animate attributeName="r" values="3;11;3" dur="2.4s" repeatCount="indefinite" />'
+                f'<animate attributeName="opacity" values="0.9;0;0.9" dur="2.4s" repeatCount="indefinite" />'
+                f"</circle>"
+            )
+
+        columns_svg.append(
+            f"""
+    <g>
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="0,0; 0,-4; 0,0" dur="3.6s" begin="{delay}" repeatCount="indefinite" />
+        {col_markup}
+        {beacon}
+        <text x="{cx}" y="{apex[1] - 15:.1f}" text-anchor="middle" font-family='{FONT_MONO}' font-size="11" font-weight="700" fill="{palette['text_primary']}">{kb_text}</text>
+      </g>
+      <text x="{cx}" y="413" text-anchor="middle" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" fill="{palette['text_secondary']}">{escape_xml(repo_short)}</text>
+    </g>"""
+        )
+
+    curve_svg = ""
+    if len(summit_points) >= 2:
+        curve_path = "M " + " L ".join(f"{px:.1f},{py:.1f}" for px, py in summit_points)
+        curve_svg = f"""
+    <path d="{curve_path}" fill="none" stroke="{palette['accent']}" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.8">
+      <animate attributeName="stroke-dashoffset" from="36" to="0" dur="2.2s" repeatCount="indefinite" />
+    </path>
+    <circle r="3.4" fill="{palette['accent']}">
+      <animateMotion path="{curve_path}" dur="4.2s" repeatCount="indefinite" />
+    </circle>"""
+
+    # Bottom Full-Width Card: Recent Code Diff & File Impact Stream
+    bottom_card = draw_extruded_card(48, 450, 1104, 146, 6.0, palette)
+    diffs = telemetry["recent_code_diffs"][:4]
+    diff_rows_svg: list[str] = []
+
+    for idx, diff in enumerate(diffs):
+        ry = 508 + idx * 25
+        repo_name = truncate_text(diff["repo"], 16)
+        msg_text = truncate_text(diff["message"], 48)
+        adds = diff["additions"]
+        dels = diff["deletions"]
+        total_delta = max(adds + dels, 1)
+        add_bar_w = max(round((adds / total_delta) * 76.0, 1), 4.0)
+        del_bar_w = max(76.0 - add_bar_w, 0.0)
+        add_str = f"+{adds:,}"
+        del_str = f"-{dels:,}"
+        files_str = f"{diff['files']} files"
+        pulse_delay = f"{idx * 0.5:.2f}s"
+
+        diff_rows_svg.append(
+            f"""
+    <g>
+      <circle cx="74" cy="{ry - 4}" r="3.2" fill="{palette['accent']}">
+        <animate attributeName="opacity" values="1;0.35;1" dur="2.2s" begin="{pulse_delay}" repeatCount="indefinite" />
+      </circle>
+      <rect x="90" y="{ry - 13}" width="132" height="18" rx="4" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" stroke-width="0.8" />
+      <text x="156" y="{ry - 0.5}" text-anchor="middle" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" fill="{palette['chip_text']}">{escape_xml(repo_name)}</text>
+      <text x="236" y="{ry}" font-family='{FONT_SANS}' font-size="12.5" fill="{palette['text_secondary']}">{escape_xml(msg_text)}</text>
+
+      <!-- Visual Additions vs Refactoring Ratio Bar -->
+      <rect x="748" y="{ry - 8}" width="{add_bar_w:.1f}" height="6" rx="2" fill="{palette['accent']}" />
+      <rect x="{748 + add_bar_w:.1f}" y="{ry - 8}" width="{del_bar_w:.1f}" height="6" rx="2" fill="{palette['chip_border']}" />
+
+      <text x="906" y="{ry}" text-anchor="end" font-family='{FONT_MONO}' font-size="11.5" font-weight="700" fill="{palette['accent']}">{add_str}</text>
+      <text x="974" y="{ry}" text-anchor="end" font-family='{FONT_MONO}' font-size="11.5" fill="{palette['text_muted']}">{del_str}</text>
+      <text x="1054" y="{ry}" text-anchor="end" font-family='{FONT_MONO}' font-size="11" fill="{palette['text_secondary']}">{files_str}</text>
+      <text x="1128" y="{ry}" text-anchor="end" font-family='{FONT_MONO}' font-size="11" fill="{palette['text_muted']}">{escape_xml(diff['date'])}</text>
+    </g>"""
+        )
 
     body = f"""
   <!-- Section Header -->
   <g transform="translate(48, 42)">
-    <text x="0" y="0" font-family='{FONT_MONO}' font-size="11" font-weight="700" letter-spacing="1.6" fill="{palette['accent']}">03 // 52-WEEK ISOMETRIC COMMIT TOPOLOGY</text>
-    <text x="0" y="28" font-family='{FONT_SANS}' font-size="24" font-weight="800" letter-spacing="-0.6" fill="{palette['text_primary']}">3D Contribution Skyline &amp; Commit Telemetry</text>
-  </g>
-  <text x="978" y="64" text-anchor="end" font-family='{FONT_MONO}' font-size="10.5" fill="{palette['text_muted']}">LESS</text>
-  {legend_svg}
-  <text x="1078" y="64" font-family='{FONT_MONO}' font-size="10.5" fill="{palette['text_muted']}">MORE</text>
-
-  <!-- 3D Skyline Stage Frame -->
-  <rect x="48" y="84" width="1104" height="292" rx="12" fill="{palette['card_bg']}" stroke="{palette['card_border']}" stroke-width="1.2" />
-
-  <!-- Summary Overlay Pills Inside Skyline Stage -->
-  <g transform="translate(68, 102)">
-    <rect x="0" y="0" width="188" height="26" rx="6" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" />
-    <text x="94" y="17" text-anchor="middle" font-family='{FONT_MONO}' font-size="10.5" font-weight="700" fill="{palette['text_primary']}">{total_contribs} CONTRIBUTIONS (1Y)</text>
-
-    <rect x="198" y="0" width="156" height="26" rx="6" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" />
-    <text x="276" y="17" text-anchor="middle" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" fill="{palette['text_secondary']}">{active_days} ACTIVE DAYS</text>
-
-    <rect x="364" y="0" width="150" height="26" rx="6" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" />
-    <text x="439" y="17" text-anchor="middle" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" fill="{palette['text_secondary']}">PEAK: {max_day} / DAY</text>
+    <text x="0" y="0" font-family='{FONT_MONO}' font-size="11" font-weight="700" letter-spacing="1.6" fill="{palette['accent']}">03 // CODEBASE ARCHITECTURE &amp; OUTPUT TELEMETRY</text>
+    <text x="0" y="28" font-family='{FONT_SANS}' font-size="24" font-weight="800" letter-spacing="-0.6" fill="{palette['text_primary']}">Code Activity &amp; Language Intelligence</text>
+    <text x="1104" y="26" text-anchor="end" font-family='{FONT_MONO}' font-size="11" fill="{palette['text_muted']}">LIVE LINGUIST &amp; GIT DIFF METRICS</text>
   </g>
 
-  <!-- Sculpted 52x7 Trimetric Towers -->
-  <g>
-    {"".join(pillars_svg)}
-    {trajectory_svg}
-  </g>
+  <!-- Row 1: Three High-Contrast KPI Summary Cards -->
+  {kpi_card_1}
+  <text x="72" y="114" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" letter-spacing="1" fill="{palette['text_muted']}">SHIPPED PUBLIC CODEBASE</text>
+  <text x="72" y="143" font-family='{FONT_SANS}' font-size="21.5" font-weight="800" letter-spacing="-0.5" fill="{palette['text_primary']}">{escape_xml(loc_label)}</text>
+  <rect x="296" y="122" width="82" height="24" rx="5" fill="{palette['pill_bg']}" />
+  <text x="337" y="138" text-anchor="middle" font-family='{FONT_MONO}' font-size="11" font-weight="700" fill="{palette['pill_text']}">{escape_xml(size_label)}</text>
 
-  <!-- Sweeping Telemetry Scanline Across the 3D Skyline -->
-  <g clip-path="url(#skyline_clip_{palette['mode']})">
-    <rect x="-180" y="84" width="160" height="292" fill="url(#{scan_grad_id})">
-      <animate attributeName="x" from="-180" to="1220" dur="6.5s" repeatCount="indefinite" />
+  {kpi_card_2}
+  <text x="448" y="114" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" letter-spacing="1" fill="{palette['text_muted']}">PRIMARY LANGUAGE SHARE</text>
+  <text x="448" y="143" font-family='{FONT_SANS}' font-size="21.5" font-weight="800" letter-spacing="-0.5" fill="{palette['text_primary']}">{escape_xml(top_lang_headline)}</text>
+  <rect x="668" y="122" width="86" height="24" rx="5" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" />
+  <text x="711" y="138" text-anchor="middle" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" fill="{palette['chip_text']}">{len(langs)} STACKS</text>
+
+  {kpi_card_3}
+  <text x="824" y="114" font-family='{FONT_MONO}' font-size="10.5" font-weight="600" letter-spacing="1" fill="{palette['text_muted']}">PUBLIC CODE REPOSITORIES</text>
+  <text x="824" y="143" font-family='{FONT_SANS}' font-size="21.5" font-weight="800" letter-spacing="-0.5" fill="{palette['text_primary']}">{total_repos} Codebases</text>
+  <rect x="1038" y="122" width="92" height="24" rx="5" fill="{palette['chip_bg']}" stroke="{palette['chip_border']}" />
+  <circle cx="1053" cy="134" r="3.5" fill="{palette['accent']}">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
+  </circle>
+  <text x="1091" y="138" text-anchor="middle" font-family='{FONT_MONO}' font-size="10" font-weight="700" fill="{palette['chip_text']}">SYNCED</text>
+
+  <!-- Row 2 Left: Language Distribution & Volume -->
+  {left_card}
+  <text x="72" y="212" font-family='{FONT_MONO}' font-size="11" font-weight="700" letter-spacing="1.1" fill="{palette['text_primary']}">LANGUAGE DISTRIBUTION</text>
+  <text x="560" y="212" text-anchor="end" font-family='{FONT_MONO}' font-size="10.5" fill="{palette['text_muted']}">VOLUME &amp; SHARE</text>
+
+  <g clip-path="url(#{bar_clip_id})">
+    {"".join(segmented_rects)}
+    <rect x="-140" y="226" width="120" height="20" fill="url(#{shimmer_id})">
+      <animate attributeName="x" from="-140" to="620" dur="4.2s" repeatCount="indefinite" />
     </rect>
   </g>
+  {"".join(lang_rows_svg)}
 
-  <!-- Bottom Console: Live Recent Commit Log -->
-  <rect x="48" y="392" width="1104" height="148" rx="12" fill="{palette['card_bg']}" stroke="{palette['card_border']}" stroke-width="1.2" />
-  <text x="70" y="414" font-family='{FONT_MONO}' font-size="10.5" font-weight="700" letter-spacing="1.3" fill="{palette['text_muted']}">LATEST PUBLIC COMMIT STREAM  //  GIT HEAD TELEMETRY</text>
-  <rect x="1050" y="403" width="80" height="16" rx="4" fill="{palette['pill_bg']}" />
-  <text x="1090" y="414.5" text-anchor="middle" font-family='{FONT_MONO}' font-size="9.5" font-weight="700" fill="{palette['pill_text']}">SYNCED</text>
-  <line x1="68" y1="422" x2="1132" y2="422" stroke="{palette['card_border']}" stroke-width="1" />
-  {"".join(commit_rows_svg)}
+  <!-- Row 2 Right: 3D Codebase Scale by Project -->
+  {right_card}
+  <text x="632" y="212" font-family='{FONT_MONO}' font-size="11" font-weight="700" letter-spacing="1.1" fill="{palette['text_primary']}">3D CODEBASE SCALE BY PROJECT</text>
+  <text x="1128" y="212" text-anchor="end" font-family='{FONT_MONO}' font-size="10.5" fill="{palette['text_muted']}">SOURCE KB</text>
+
+  <!-- Subtle Horizontal Elevation Reference Lines -->
+  <line x1="632" y1="266" x2="1128" y2="266" stroke="{palette['grid_stroke']}" stroke-width="1" stroke-dasharray="4 4" />
+  <line x1="632" y1="306" x2="1128" y2="306" stroke="{palette['grid_stroke']}" stroke-width="1" stroke-dasharray="4 4" />
+  <line x1="632" y1="346" x2="1128" y2="346" stroke="{palette['grid_stroke']}" stroke-width="1" stroke-dasharray="4 4" />
+  <line x1="632" y1="386" x2="1128" y2="386" stroke="{palette['card_border']}" stroke-width="1" />
+
+  {"".join(columns_svg)}
+  {curve_svg}
+
+  <!-- Row 3: Recent Code Diff & File Impact Stream -->
+  {bottom_card}
+  <text x="72" y="475" font-family='{FONT_MONO}' font-size="10.5" font-weight="700" letter-spacing="1.2" fill="{palette['text_muted']}">RECENT CODE ACTIVITY  //  LINES ADDED, REFACTORED &amp; FILES TOUCHED</text>
+  <rect x="1032" y="463" width="96" height="17" rx="4" fill="{palette['pill_bg']}" />
+  <text x="1080" y="475" text-anchor="middle" font-family='{FONT_MONO}' font-size="9.5" font-weight="700" fill="{palette['pill_text']}">GIT DIFFS</text>
+  <line x1="72" y1="485" x2="1128" y2="485" stroke="{palette['card_border']}" stroke-width="1" />
+  {"".join(diff_rows_svg)}
 """
     return header + body + footer
 

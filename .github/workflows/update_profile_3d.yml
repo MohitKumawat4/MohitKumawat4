@@ -44,7 +44,7 @@ jobs:
             exit 0
           fi
           printf '%s\n' \
-            "- Refresh 3D contribution skyline from latest GitHub calendar" \
-            "- Sync top recent public repositories and commit stream" \
+            "- Refresh 3D codebase scale and Linguist language metrics" \
+            "- Sync top recent public repositories and git diff stream" \
             "- Update dark and light monochrome profile SVG assets" | git commit -F -
           git push
