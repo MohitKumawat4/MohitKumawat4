@@ -58,7 +58,7 @@
       <line x1="392" y1="12" x2="392" y2="46" stroke="#cccccc" stroke-width="1" />
 
       <text x="18" y="23" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10" letter-spacing="1" fill="#6b6b6b">PUBLIC REPOS</text>
-      <text x="18" y="43" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="14.5" font-weight="700" fill="#000000">28 REPOSITORIES</text>
+      <text x="18" y="43" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="14.5" font-weight="700" fill="#000000">29 REPOSITORIES</text>
 
       <text x="194" y="23" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10" letter-spacing="1" fill="#6b6b6b">CURRENT ROLE</text>
       <text x="194" y="43" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="14" font-weight="700" fill="#000000">SDE Intern @ LawDocs</text>
