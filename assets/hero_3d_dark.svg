@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" role="img">
+  <defs>
+    <linearGradient id="bg_grad_dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080808" />
+      <stop offset="100%" stop-color="#000000" />
+    </linearGradient>
+    <pattern id="grid_pat_dark" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#161616" stroke-width="0.8" />
+    </pattern>
+    
+  </defs>
+  <rect x="1" y="1" width="1198" height="418" rx="16" fill="url(#bg_grad_dark)" stroke="#222222" stroke-width="1.5" />
+  <rect x="2" y="2" width="1196" height="416" rx="15" fill="url(#grid_pat_dark)" opacity="0.65" />
+
+  <!-- Left Column: Architectural Identity & Telemetry -->
+  <g transform="translate(52, 54)">
+    <!-- Status Badge -->
+    <rect x="0" y="0" width="328" height="30" rx="15" fill="#141414" stroke="#2a2a2a" stroke-width="1" />
+    <circle cx="18" cy="15" r="4.5" fill="#10b981">
+      <animate attributeName="opacity" values="1;0.3;1" dur="2.2s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="18" cy="15" r="4.5" fill="none" stroke="#10b981" stroke-width="1.2">
+      <animate attributeName="r" values="4.5;10;4.5" dur="2.2s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.7;0;0.7" dur="2.2s" repeatCount="indefinite" />
+    </circle>
+    <text x="34" y="19.5" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11" font-weight="600" letter-spacing="1.2" fill="#a3a3a3">JAIPUR, IN  //  OPEN TO SELECT BUILDS</text>
+
+    <!-- Name & Role -->
+    <text x="0" y="88" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="48" font-weight="800" letter-spacing="-1.4" fill="#ffffff">MOHIT KUMAWAT</text>
+    <text x="0" y="122" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="14.5" font-weight="600" letter-spacing="0.5" fill="#a3a3a3">FRONT-END &amp; FULL-STACK ENGINEER  ·  3D WEB &amp; AI SYSTEMS</text>
+
+    <!-- Engineering Statement -->
+    <text x="0" y="164" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="15" fill="#a3a3a3">Building high-velocity Next.js platforms, interactive Three.js WebGL</text>
+    <text x="0" y="186" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="15" fill="#a3a3a3">experiences, real-time AI pipelines, and cloud-native web products.</text>
+
+    <!-- Core Stack Pills -->
+    <g transform="translate(0, 214)">
+      <rect x="0" y="0" width="96" height="28" rx="6" fill="#ffffff" />
+      <text x="48" y="18" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="700" fill="#000000">TypeScript</text>
+
+      <rect x="106" y="0" width="92" height="28" rx="6" fill="#ffffff" />
+      <text x="152" y="18" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="700" fill="#000000">Next.js 16</text>
+
+      <rect x="208" y="0" width="88" height="28" rx="6" fill="#141414" stroke="#2a2a2a" />
+      <text x="252" y="18" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="600" fill="#d4d4d4">Three.js</text>
+
+      <rect x="306" y="0" width="88" height="28" rx="6" fill="#141414" stroke="#2a2a2a" />
+      <text x="350" y="18" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="600" fill="#d4d4d4">Supabase</text>
+
+      <rect x="404" y="0" width="92" height="28" rx="6" fill="#141414" stroke="#2a2a2a" />
+      <text x="450" y="18" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="600" fill="#d4d4d4">Gemini AI</text>
+    </g>
+
+    <!-- Telemetry Metrics Strip -->
+    <g transform="translate(0, 266)">
+      <rect x="0" y="0" width="584" height="58" rx="10" fill="#0a0a0a" stroke="#262626" stroke-width="1" />
+      <line x1="176" y1="12" x2="176" y2="46" stroke="#262626" stroke-width="1" />
+      <line x1="392" y1="12" x2="392" y2="46" stroke="#262626" stroke-width="1" />
+
+      <text x="18" y="23" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10" letter-spacing="1" fill="#6b6b6b">PUBLIC REPOS</text>
+      <text x="18" y="43" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="14.5" font-weight="700" fill="#ffffff">28 REPOSITORIES</text>
+
+      <text x="194" y="23" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10" letter-spacing="1" fill="#6b6b6b">CURRENT ROLE</text>
+      <text x="194" y="43" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="14" font-weight="700" fill="#ffffff">SDE Intern @ LawDocs</text>
+
+      <text x="410" y="23" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10" letter-spacing="1" fill="#6b6b6b">ARCHITECTURE</text>
+      <text x="410" y="43" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="14" font-weight="700" fill="#ffffff">UI · API · 3D · AI</text>
+    </g>
+  </g>
+
+  <!-- Right Column: Animated Isometric 3D Engineering Stack -->
+  <g>
+    <!-- Axonometric Base Grid Plinth -->
+    <polygon points="862.00,162.00 1073.31,284.00 862.00,406.00 650.69,284.00" fill="none" stroke="#262626" stroke-width="1.2" stroke-dasharray="5 5" />
+    <polygon points="862.00,192.00 1021.35,284.00 862.00,376.00 702.65,284.00" fill="none" stroke="#262626" stroke-width="1">
+      <animate attributeName="opacity" values="0.35;0.9;0.35" dur="4s" repeatCount="indefinite" />
+    </polygon>
+
+    <!-- Tier 1: Data & Cloud Foundation -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-4; 0,0" dur="5.2s" repeatCount="indefinite" />
+      <g stroke="#3a3a3a" stroke-width="1.2" stroke-linejoin="round"><polygon points="714.78,246.00 862.00,331.00 862.00,351.00 714.78,266.00" fill="#151515" /><polygon points="862.00,331.00 1009.22,246.00 1009.22,266.00 862.00,351.00" fill="#0c0c0c" /><polygon points="862.00,161.00 1009.22,246.00 862.00,331.00 714.78,246.00" fill="#242424" /></g>
+    </g>
+
+    <!-- Animated Vertical Data Conduits -->
+    <line x1="766.74" y1="248.0" x2="766.74" y2="128.0" stroke="#6b6b6b" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.65" />
+    <line x1="957.26" y1="248.0" x2="957.26" y2="128.0" stroke="#6b6b6b" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.65" />
+    <line x1="862.0" y1="248.0" x2="862.0" y2="116.0" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.8" />
+
+    <!-- Rising Telemetry Pulses Along Conduits (opacity=0 prevents pre-begin origin artifact) -->
+    <circle r="3.2" fill="#10b981" opacity="0">
+      <animateMotion path="M 766.74,248.0 L 766.74,128.0" dur="2.4s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite" />
+    </circle>
+    <circle r="3.2" fill="#10b981" opacity="0">
+      <animateMotion path="M 957.26,248.0 L 957.26,128.0" dur="2.4s" begin="1.2s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="1.2s" repeatCount="indefinite" />
+    </circle>
+
+    <!-- Tier 2: Levitating AI & API Engine -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="4.2s" repeatCount="indefinite" />
+      <g stroke="#3a3a3a" stroke-width="1.2" stroke-linejoin="round"><polygon points="744.22,184.00 862.00,252.00 862.00,270.00 744.22,202.00" fill="#151515" /><polygon points="862.00,252.00 979.78,184.00 979.78,202.00 862.00,270.00" fill="#0c0c0c" /><polygon points="862.00,116.00 979.78,184.00 862.00,252.00 744.22,184.00" fill="#242424" /></g>
+      <g stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round"><polygon points="813.50,162.00 862.00,190.00 862.00,212.00 813.50,184.00" fill="#cccccc" /><polygon points="862.00,190.00 910.50,162.00 910.50,184.00 862.00,212.00" fill="#888888" /><polygon points="862.00,134.00 910.50,162.00 862.00,190.00 813.50,162.00" fill="#ffffff" /></g>
+    </g>
+
+    <!-- Tier 3: Counter-Levitating 3D Interface Crown -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,-3; 0,-16; 0,-3" dur="3.6s" repeatCount="indefinite" />
+      <g stroke="#3a3a3a" stroke-width="1.2" stroke-linejoin="round"><polygon points="768.47,120.00 862.00,174.00 862.00,188.00 768.47,134.00" fill="#151515" /><polygon points="862.00,174.00 955.53,120.00 955.53,134.00 862.00,188.00" fill="#0c0c0c" /><polygon points="862.00,66.00 955.53,120.00 862.00,174.00 768.47,120.00" fill="#242424" /></g>
+      <g stroke="#ffffff" stroke-width="1.1" stroke-linejoin="round"><polygon points="839.48,71.00 862.00,84.00 862.00,108.00 839.48,95.00" fill="#cccccc" /><polygon points="862.00,84.00 884.52,71.00 884.52,95.00 862.00,108.00" fill="#888888" /><polygon points="862.00,58.00 884.52,71.00 862.00,84.00 839.48,71.00" fill="#ffffff" /></g>
+      <g stroke="#3a3a3a" stroke-width="1.1" stroke-linejoin="round"><polygon points="882.78,102.00 905.30,115.00 905.30,133.00 882.78,120.00" fill="#151515" /><polygon points="905.30,115.00 927.82,102.00 927.82,120.00 905.30,133.00" fill="#0c0c0c" /><polygon points="905.30,89.00 927.82,102.00 905.30,115.00 882.78,102.00" fill="#242424" /></g>
+      <g stroke="#3a3a3a" stroke-width="1.1" stroke-linejoin="round"><polygon points="796.18,102.00 818.70,115.00 818.70,133.00 796.18,120.00" fill="#151515" /><polygon points="818.70,115.00 841.22,102.00 841.22,120.00 818.70,133.00" fill="#0c0c0c" /><polygon points="818.70,89.00 841.22,102.00 818.70,115.00 796.18,102.00" fill="#242424" /></g>
+      <g stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round"><polygon points="834.29,112.00 862.00,128.00 862.00,160.00 834.29,144.00" fill="#cccccc" /><polygon points="862.00,128.00 889.71,112.00 889.71,144.00 862.00,160.00" fill="#888888" /><polygon points="862.00,96.00 889.71,112.00 862.00,128.00 834.29,112.00" fill="#ffffff" /></g>
+      <circle cx="862.0" cy="102.0" r="3.5" fill="#10b981" />
+      <circle cx="862.0" cy="102.0" r="3.5" fill="none" stroke="#10b981" stroke-width="1.3">
+        <animate attributeName="r" values="3.5;14;3.5" dur="2.6s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.9;0;0.9" dur="2.6s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Floating Satellite Cubes & Layer Callout Labels -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-12; 0,0" dur="3.8s" begin="0.5s" repeatCount="indefinite" />
+      <g stroke="#ffffff" stroke-width="1.0" stroke-linejoin="round"><polygon points="675.22,168.00 696.00,180.00 696.00,204.00 675.22,192.00" fill="#cccccc" /><polygon points="696.00,180.00 716.78,168.00 716.78,192.00 696.00,204.00" fill="#888888" /><polygon points="696.00,156.00 716.78,168.00 696.00,180.00 675.22,168.00" fill="#ffffff" /></g>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,-8; 0,4; 0,-8" dur="4.4s" begin="0.9s" repeatCount="indefinite" />
+      <g stroke="#3a3a3a" stroke-width="1.0" stroke-linejoin="round"><polygon points="958.68,108.00 976.00,118.00 976.00,138.00 958.68,128.00" fill="#151515" /><polygon points="976.00,118.00 993.32,108.00 993.32,128.00 976.00,138.00" fill="#0c0c0c" /><polygon points="976.00,98.00 993.32,108.00 976.00,118.00 958.68,108.00" fill="#242424" /></g>
+    </g>
+
+    <!-- Callout Annotations -->
+    <g font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10" fill="#6b6b6b">
+      <text x="1008" y="106" font-weight="700" fill="#ffffff">L3 // 3D &amp; UI</text>
+      <text x="1008" y="121">Next.js · Three.js</text>
+
+      <text x="1014" y="198" font-weight="700" fill="#ffffff">L2 // AI &amp; API</text>
+      <text x="1014" y="213">Node · Gemini · Pub/Sub</text>
+
+      <text x="1014" y="294" font-weight="700" fill="#ffffff">L1 // DATA &amp; CLOUD</text>
+      <text x="1014" y="309">Supabase · PostgreSQL</text>
+    </g>
+  </g>
+
+</svg>

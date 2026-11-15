@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 510" width="100%" role="img">
+  <defs>
+    <linearGradient id="bg_grad_light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3f3f3" />
+      <stop offset="100%" stop-color="#eeeeee" />
+    </linearGradient>
+    <pattern id="grid_pat_light" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#dedede" stroke-width="0.8" />
+    </pattern>
+    
+  </defs>
+  <rect x="1" y="1" width="1198" height="508" rx="16" fill="url(#bg_grad_light)" stroke="#cccccc" stroke-width="1.5" />
+  <rect x="2" y="2" width="1196" height="506" rx="15" fill="url(#grid_pat_light)" opacity="0.65" />
+
+  <!-- Section Header -->
+  <g transform="translate(48, 42)">
+    <text x="0" y="0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11" font-weight="700" letter-spacing="1.6" fill="#059669">01 // SELECTED PRODUCTION BUILDS</text>
+    <text x="0" y="28" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="24" font-weight="800" letter-spacing="-0.6" fill="#000000">Featured 3D &amp; Full-Stack Projects</text>
+    <text x="1104" y="26" text-anchor="end" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11" fill="#6b6b6b">LIVE DEPLOYMENTS ON VERCEL</text>
+  </g>
+
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3.5; 0,0" dur="4.8s" begin="0.00s" repeatCount="indefinite" />
+    <g><polygon points="54.00,278.00 580.00,278.00 587.00,285.00 61.00,285.00" fill="#cecece" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><polygon points="580.00,98.00 587.00,105.00 587.00,285.00 580.00,278.00" fill="#dcdcdc" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><rect x="48.0" y="92.0" width="532.0" height="186.0" rx="10" fill="#f9f9f9" stroke="#cccccc" stroke-width="1.2" /></g>
+
+    <!-- Index & Live Domain Badge -->
+    <text x="72.0" y="122.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11" font-weight="700" fill="#6b6b6b">01 // ultima-five.vercel.app</text>
+    <circle cx="64.0" cy="118.0" r="3" fill="#059669" opacity="0">
+      <animate attributeName="opacity" values="0;0" dur="1s" />
+    </circle>
+
+    <!-- Title & Subtitle -->
+    <text x="72.0" y="150.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="20" font-weight="800" letter-spacing="-0.4" fill="#000000">ULTIMA</text>
+    <text x="72.0" y="170.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="600" fill="#059669">Precision Task Orchestration Engine</text>
+
+    <!-- Two-line Engineering Summary -->
+    <text x="72.0" y="196.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">Drag-and-drop workload balancing, role isolation, automated</text>
+    <text x="72.0" y="214.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">email dispatch, and sub-second Supabase realtime state sync.</text>
+
+    <!-- Bespoke Isometric Mini-Sculpture -->
+    <g><g stroke="#9e9e9e" stroke-width="1.0" stroke-linejoin="round"><polygon points="470.97,158.00 516.00,184.00 516.00,192.00 470.97,166.00" fill="#dfdfdf" /><polygon points="516.00,184.00 561.03,158.00 561.03,166.00 516.00,192.00" fill="#c4c4c4" /><polygon points="516.00,132.00 561.03,158.00 516.00,184.00 470.97,158.00" fill="#ffffff" /></g><g><animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="3.1s" repeatCount="indefinite" /><g stroke="#5c5c5c" stroke-width="1.0" stroke-linejoin="round"><polygon points="500.41,127.00 514.27,135.00 514.27,155.00 500.41,147.00" fill="#1f1f1f" /><polygon points="514.27,135.00 528.12,127.00 528.12,147.00 514.27,155.00" fill="#0a0a0a" /><polygon points="514.27,119.00 528.12,127.00 514.27,135.00 500.41,127.00" fill="#383838" /></g></g><g stroke="#9e9e9e" stroke-width="1.0" stroke-linejoin="round"><polygon points="521.20,146.00 535.05,154.00 535.05,167.00 521.20,159.00" fill="#dfdfdf" /><polygon points="535.05,154.00 548.91,146.00 548.91,159.00 535.05,167.00" fill="#c4c4c4" /><polygon points="535.05,138.00 548.91,146.00 535.05,154.00 521.20,146.00" fill="#ffffff" /></g><g><animateTransform attributeName="transform" type="translate" values="0,-4;0,2;0,-4" dur="3.1s" repeatCount="indefinite" /><g stroke="#5c5c5c" stroke-width="1.0" stroke-linejoin="round"><polygon points="486.56,143.00 505.61,154.00 505.61,180.00 486.56,169.00" fill="#1f1f1f" /><polygon points="505.61,154.00 524.66,143.00 524.66,169.00 505.61,180.00" fill="#0a0a0a" /><polygon points="505.61,132.00 524.66,143.00 505.61,154.00 486.56,143.00" fill="#383838" /></g></g></g>
+
+    <!-- Stack Chips -->
+    <rect x="72.0" y="236.0" width="94.0" height="24" rx="5" fill="#000000"  /><text x="119.0" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#ffffff">Next.js 16</text><rect x="174.0" y="236.0" width="79.2" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="213.6" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">Supabase</text><rect x="261.2" y="236.0" width="94.0" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="308.2" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">TypeScript</text><rect x="363.2" y="236.0" width="62.0" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="394.2" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">RLS</text>
+  </g>
+
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3.5; 0,0" dur="4.8s" begin="0.55s" repeatCount="indefinite" />
+    <g><polygon points="622.00,278.00 1148.00,278.00 1155.00,285.00 629.00,285.00" fill="#cecece" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><polygon points="1148.00,98.00 1155.00,105.00 1155.00,285.00 1148.00,278.00" fill="#dcdcdc" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><rect x="616.0" y="92.0" width="532.0" height="186.0" rx="10" fill="#f9f9f9" stroke="#cccccc" stroke-width="1.2" /></g>
+
+    <!-- Index & Live Domain Badge -->
+    <text x="640.0" y="122.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11" font-weight="700" fill="#6b6b6b">02 // strike-lac.vercel.app</text>
+    <circle cx="632.0" cy="118.0" r="3" fill="#059669" opacity="0">
+      <animate attributeName="opacity" values="0;0" dur="1s" />
+    </circle>
+
+    <!-- Title & Subtitle -->
+    <text x="640.0" y="150.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="20" font-weight="800" letter-spacing="-0.4" fill="#000000">STRIKE</text>
+    <text x="640.0" y="170.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="600" fill="#059669">Real-Time AI Email Intelligence</text>
+
+    <!-- Two-line Engineering Summary -->
+    <text x="640.0" y="196.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">Streams Gmail via Cloud Pub/Sub, scores urgency and synthesizes</text>
+    <text x="640.0" y="214.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">executive summaries with Gemini AI, pushing WhatsApp alerts.</text>
+
+    <!-- Bespoke Isometric Mini-Sculpture -->
+    <g><g stroke="#9e9e9e" stroke-width="1.0" stroke-linejoin="round"><polygon points="1042.43,158.00 1084.00,182.00 1084.00,190.00 1042.43,166.00" fill="#dfdfdf" /><polygon points="1084.00,182.00 1125.57,158.00 1125.57,166.00 1084.00,190.00" fill="#c4c4c4" /><polygon points="1084.00,134.00 1125.57,158.00 1084.00,182.00 1042.43,158.00" fill="#ffffff" /></g><g stroke="#5c5c5c" stroke-width="1.0" stroke-linejoin="round"><polygon points="1064.95,130.00 1084.00,141.00 1084.00,169.00 1064.95,158.00" fill="#1f1f1f" /><polygon points="1084.00,141.00 1103.05,130.00 1103.05,158.00 1084.00,169.00" fill="#0a0a0a" /><polygon points="1084.00,119.00 1103.05,130.00 1084.00,141.00 1064.95,130.00" fill="#383838" /></g><circle cx="1084.0" cy="128.0" r="3" fill="#059669" /><circle cx="1084.0" cy="128.0" r="3" fill="none" stroke="#059669" stroke-width="1.2"><animate attributeName="r" values="3;16;3" dur="2.4s" repeatCount="indefinite" /><animate attributeName="opacity" values="0.9;0;0.9" dur="2.4s" repeatCount="indefinite" /></circle></g>
+
+    <!-- Stack Chips -->
+    <rect x="640.0" y="236.0" width="71.8" height="24" rx="5" fill="#000000"  /><text x="675.9" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#ffffff">Next.js</text><rect x="719.8" y="236.0" width="86.6" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="763.1" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">Gemini AI</text><rect x="814.4" y="236.0" width="71.8" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="850.3" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">Pub/Sub</text><rect x="894.2" y="236.0" width="108.8" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="948.6" y="251.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">WhatsApp API</text>
+  </g>
+
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3.5; 0,0" dur="4.8s" begin="1.10s" repeatCount="indefinite" />
+    <g><polygon points="54.00,490.00 580.00,490.00 587.00,497.00 61.00,497.00" fill="#cecece" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><polygon points="580.00,310.00 587.00,317.00 587.00,497.00 580.00,490.00" fill="#dcdcdc" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><rect x="48.0" y="304.0" width="532.0" height="186.0" rx="10" fill="#f9f9f9" stroke="#cccccc" stroke-width="1.2" /></g>
+
+    <!-- Index & Live Domain Badge -->
+    <text x="72.0" y="334.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11" font-weight="700" fill="#6b6b6b">03 // om-advertising.vercel.app</text>
+    <circle cx="64.0" cy="330.0" r="3" fill="#059669" opacity="0">
+      <animate attributeName="opacity" values="0;0" dur="1s" />
+    </circle>
+
+    <!-- Title & Subtitle -->
+    <text x="72.0" y="362.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="20" font-weight="800" letter-spacing="-0.4" fill="#000000">OM ADVERTISING</text>
+    <text x="72.0" y="382.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="600" fill="#059669">3D Storefront &amp; Spatial Scroll Studio</text>
+
+    <!-- Two-line Engineering Summary -->
+    <text x="72.0" y="408.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">Multi-chapter exterior Three.js storefront showcase featuring</text>
+    <text x="72.0" y="426.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">scroll-driven camera landmarks and adaptive pixel rendering.</text>
+
+    <!-- Bespoke Isometric Mini-Sculpture -->
+    <g><animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="3.8s" repeatCount="indefinite" /><g stroke="#9e9e9e" stroke-width="1.0" stroke-linejoin="round"><polygon points="470.97,369.00 519.46,397.00 519.46,404.00 470.97,376.00" fill="#dfdfdf" /><polygon points="519.46,397.00 561.03,373.00 561.03,380.00 519.46,404.00" fill="#c4c4c4" /><polygon points="512.54,345.00 561.03,373.00 519.46,397.00 470.97,369.00" fill="#ffffff" /></g><g stroke="#5c5c5c" stroke-width="1.0" stroke-linejoin="round"><polygon points="490.02,348.00 521.20,366.00 521.20,386.00 490.02,368.00" fill="#1f1f1f" /><polygon points="521.20,366.00 545.44,352.00 545.44,372.00 521.20,386.00" fill="#0a0a0a" /><polygon points="514.27,334.00 545.44,352.00 521.20,366.00 490.02,348.00" fill="#383838" /></g><g stroke="#9e9e9e" stroke-width="1.0" stroke-linejoin="round"><polygon points="484.82,353.00 519.46,373.00 519.46,378.00 484.82,358.00" fill="#dfdfdf" /><polygon points="519.46,373.00 535.05,364.00 535.05,369.00 519.46,378.00" fill="#c4c4c4" /><polygon points="500.41,344.00 535.05,364.00 519.46,373.00 484.82,353.00" fill="#ffffff" /></g></g>
+
+    <!-- Stack Chips -->
+    <rect x="72.0" y="448.0" width="71.8" height="24" rx="5" fill="#000000"  /><text x="107.9" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#ffffff">Next.js</text><rect x="151.8" y="448.0" width="79.2" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="191.4" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">Three.js</text><rect x="239.0" y="448.0" width="62.0" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="270.0" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">WebGL</text><rect x="309.0" y="448.0" width="94.0" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="356.0" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">TypeScript</text>
+  </g>
+
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3.5; 0,0" dur="4.8s" begin="1.65s" repeatCount="indefinite" />
+    <g><polygon points="622.00,490.00 1148.00,490.00 1155.00,497.00 629.00,497.00" fill="#cecece" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><polygon points="1148.00,310.00 1155.00,317.00 1155.00,497.00 1148.00,490.00" fill="#dcdcdc" stroke="#cccccc" stroke-width="1" stroke-linejoin="round" /><rect x="616.0" y="304.0" width="532.0" height="186.0" rx="10" fill="#f9f9f9" stroke="#cccccc" stroke-width="1.2" /></g>
+
+    <!-- Index & Live Domain Badge -->
+    <text x="640.0" y="334.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11" font-weight="700" fill="#6b6b6b">04 // portfolio-2026-sooty-six.vercel.app</text>
+    <circle cx="632.0" cy="330.0" r="3" fill="#059669" opacity="0">
+      <animate attributeName="opacity" values="0;0" dur="1s" />
+    </circle>
+
+    <!-- Title & Subtitle -->
+    <text x="640.0" y="362.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="20" font-weight="800" letter-spacing="-0.4" fill="#000000">3D PORTFOLIO</text>
+    <text x="640.0" y="382.0" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="11.5" font-weight="600" fill="#059669">WebGL Shaders &amp; Kinetic Architecture</text>
+
+    <!-- Two-line Engineering Summary -->
+    <text x="640.0" y="408.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">Immersive personal showcase engineered with custom GLSL fluid</text>
+    <text x="640.0" y="426.0" font-family='ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' font-size="12.5" fill="#3f3f3f">shaders, React Three Fiber physics, and kinetic card stacks.</text>
+
+    <!-- Bespoke Isometric Mini-Sculpture -->
+    <g><g stroke="#9e9e9e" stroke-width="1.0" stroke-linejoin="round"><polygon points="1042.43,373.00 1084.00,397.00 1084.00,402.00 1042.43,378.00" fill="#dfdfdf" /><polygon points="1084.00,397.00 1125.57,373.00 1125.57,378.00 1084.00,402.00" fill="#c4c4c4" /><polygon points="1084.00,349.00 1125.57,373.00 1084.00,397.00 1042.43,373.00" fill="#ffffff" /></g><g><animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.8s" repeatCount="indefinite" /><g stroke="#5c5c5c" stroke-width="1.0" stroke-linejoin="round"><polygon points="1049.36,360.00 1084.00,380.00 1084.00,385.00 1049.36,365.00" fill="#1f1f1f" /><polygon points="1084.00,380.00 1118.64,360.00 1118.64,365.00 1084.00,385.00" fill="#0a0a0a" /><polygon points="1084.00,340.00 1118.64,360.00 1084.00,380.00 1049.36,360.00" fill="#383838" /></g></g><g><animateTransform attributeName="transform" type="translate" values="0,-2;0,-9;0,-2" dur="2.8s" repeatCount="indefinite" /><g stroke="#5c5c5c" stroke-width="1.0" stroke-linejoin="round"><polygon points="1058.02,346.00 1084.00,361.00 1084.00,367.00 1058.02,352.00" fill="#1f1f1f" /><polygon points="1084.00,361.00 1109.98,346.00 1109.98,352.00 1084.00,367.00" fill="#0a0a0a" /><polygon points="1084.00,331.00 1109.98,346.00 1084.00,361.00 1058.02,346.00" fill="#383838" /></g></g></g>
+
+    <!-- Stack Chips -->
+    <rect x="640.0" y="448.0" width="94.0" height="24" rx="5" fill="#000000"  /><text x="687.0" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#ffffff">Next.js 16</text><rect x="742.0" y="448.0" width="94.0" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="789.0" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">R3F / GLSL</text><rect x="844.0" y="448.0" width="116.2" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="902.1" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">Framer Motion</text><rect x="968.2" y="448.0" width="79.2" height="24" rx="5" fill="#e6e6e6" stroke="#c8c8c8" stroke-width="1" /><text x="1007.8" y="463.5" text-anchor="middle" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace' font-size="10.5" font-weight="600" fill="#171717">Tailwind</text>
+  </g>
+
+</svg>
